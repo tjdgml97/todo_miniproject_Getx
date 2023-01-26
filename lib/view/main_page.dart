@@ -13,6 +13,8 @@ class TodoList extends StatefulWidget {
 
 class _TodoListState extends State<TodoList> {
   TextEditingController inputController = TextEditingController();
+  TextEditingController updateController = TextEditingController();
+  String updatetodo = '';
   String newtodo = '';
   final controller = Get.put(Controller());
 
@@ -52,6 +54,7 @@ class _TodoListState extends State<TodoList> {
                             onPressed: () {
                               newtodo = inputController.text.toString();
                               controller.create(newtodo);
+                              inputController.clear();
                             },
                             child: Text("추가")),
                       ],
@@ -62,9 +65,64 @@ class _TodoListState extends State<TodoList> {
                     title: GetBuilder<Controller>(builder: (_) {
                       return Text(controller.todolist[i - 1].content);
                     }),
-                    trailing: IconButton(
-                      icon: Icon(Icons.delete),
-                      onPressed: () {},
+
+//                     ListTile(
+//   title: Text("This is my ListTile"),
+//   trailing: Wrap(
+//     spacing: 12, // space between two icons
+//     children: <Widget>[
+//       Icon(Icons.call), // icon-1
+//       Icon(Icons.message), // icon-2
+//     ],
+//   ),
+// )
+
+                    trailing: Wrap(
+                      spacing: 10,
+                      children: [
+                        IconButton(
+                          icon: Icon(Icons.create),
+                          onPressed: () {
+                            print("hi");
+                            //print(i);
+                            showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    content: TextField(
+                                      controller: updateController,
+                                      // obscureText: true,
+                                      decoration: InputDecoration(
+                                        border: OutlineInputBorder(),
+                                        labelText: i.toString(),
+                                      ),
+                                    ),
+                                    actions: [
+                                      TextButton(
+                                        child: Text("저장"),
+                                        onPressed: () {
+                                          updatetodo =
+                                              updateController.text.toString();
+                                          controller.todoupdate(updatetodo, i);
+                                          updatetodo = '';
+                                          updateController.clear();
+                                          Navigator.pop(context);
+                                        },
+                                      ),
+                                      TextButton(
+                                        child: Text("취소"),
+                                        onPressed: () {},
+                                      ),
+                                    ],
+                                  );
+                                });
+                          },
+                        ),
+                        // IconButton(
+                        //   icon: Icon(Icons.delete),
+                        //   onPressed: () {},
+                        // ),
+                      ],
                     ),
                     leading: IconButton(
                         icon: Icon(Icons.check_box_outline_blank),
